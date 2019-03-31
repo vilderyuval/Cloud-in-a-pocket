@@ -1,0 +1,40 @@
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Scanner;
+
+
+public class Main {
+    public static void main(String[] args) {
+        connectToServer();
+    }
+
+    public static void connectToServer() {
+        try(ServerSocket serverSocket = new ServerSocket(2106)) {
+            Socket connectionSocket = serverSocket.accept();
+
+            InputStream inputToServer = connectionSocket.getInputStream();
+            OutputStream outputFromServer = connectionSocket.getOutputStream();
+
+            Scanner scanner = new Scanner(inputToServer, "UTF-8");
+            PrintWriter serverPrintOut = new PrintWriter(new OutputStreamWriter(outputFromServer, "UTF-8"), true);
+
+            serverPrintOut.println("Hello World!");
+              // to finish connecting the user must write "connect"
+            boolean done = false;
+            while(!done && scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                serverPrintOut.println("write connect to finish connecting: " + line);
+
+                if(line.toLowerCase().trim().equals("connect"))// i want a little explanation about this command שגיא
+                 {
+                    done = true;
+                }
+            }
+        } 
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+                    }
+    }
+}
